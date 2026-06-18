@@ -1,0 +1,30 @@
+{
+  "name": "license-dashboard-bot",
+  "version": "1.0.0",
+  "description": "Discord Bot - Static One-Click GUI Dashboard untuk Sistem Manajemen Lisensi Software (integrasi dengan Laravel API)",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "dev": "nodemon bot.js"
+  },
+  "keywords": [
+    "discord",
+    "discord.js",
+    "license-manager",
+    "laravel-api",
+    "dashboard"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
