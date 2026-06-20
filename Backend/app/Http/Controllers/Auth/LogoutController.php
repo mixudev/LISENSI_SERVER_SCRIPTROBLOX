@@ -11,6 +11,16 @@ class LogoutController extends Controller
 {
     public function destroy(Request $request): RedirectResponse
     {
+        $userId = auth()->id();
+
+        if ($userId && ! auth()->user()?->isAdmin()) {
+            \App\Models\LicenseActivity::log(
+                action: \App\Models\LicenseActivity::ACTION_LOGOUT,
+                userId: $userId,
+                request: $request
+            );
+        }
+
         Auth::logout();
 
         $request->session()->invalidate();

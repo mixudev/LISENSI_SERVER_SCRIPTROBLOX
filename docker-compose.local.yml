@@ -1,0 +1,33 @@
+# =============================================================================
+# Local development overrides
+# Digunakan otomatis oleh setup.sh dan start.sh
+# =============================================================================
+
+services:
+  backend:
+    build:
+      target: development
+    environment:
+      RUN_MIGRATIONS: "true"
+
+  queue:
+    environment:
+      RUN_MIGRATIONS: "false"
+
+  # ─── ngrok tunnel (local dev — Roblox testing) ───────────────────────────────
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: sl-ngrok
+    restart: unless-stopped
+    command: http nginx:80
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    ports:
+      - "${NGROK_UI_PORT:-4040}:4040"
+    depends_on:
+      nginx:
+        condition: service_started
+    networks:
+      - sl-network
+    profiles:
+      - ngrok

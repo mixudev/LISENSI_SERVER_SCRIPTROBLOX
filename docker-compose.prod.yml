@@ -1,0 +1,28 @@
+# =============================================================================
+# Production overrides
+# Jalankan: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# =============================================================================
+
+services:
+  backend:
+    build:
+      target: production
+    restart: always
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      RUN_MIGRATIONS: "false"
+
+  queue:
+    restart: always
+    environment:
+      APP_ENV: production
+
+  mysql:
+    ports: []
+
+  nginx:
+    restart: always
+
+  bot:
+    restart: always

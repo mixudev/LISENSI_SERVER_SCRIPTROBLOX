@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\LicenseActivity;
 use App\Repositories\LicenseRepository;
 use Illuminate\View\View;
 
@@ -30,6 +31,12 @@ class DashboardController extends Controller
         $expiringLicenses = $licenses
             ->filter(fn ($l) => $l->status === 'active' && $l->expired_at?->between(now(), now()->addDays(7)));
 
-        return view('dashboard.user.index', compact('stats', 'activeLicenses', 'expiringLicenses'));
+        $recentActivities = LicenseActivity::with('license')
+            ->where('user_id', $user->id)
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('dashboard.user.index', compact('stats', 'activeLicenses', 'expiringLicenses', 'recentActivities'));
     }
 }

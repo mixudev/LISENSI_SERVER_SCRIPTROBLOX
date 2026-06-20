@@ -115,4 +115,23 @@ class LicenseActivity extends Model
             'user_agent' => $request?->userAgent(),
         ]);
     }
+
+    /**
+     * Label aksi dalam Bahasa Indonesia untuk tampilan dashboard.
+     */
+    public static function labelFor(string $action): string
+    {
+        return match ($action) {
+            self::ACTION_LOGIN => 'Login dashboard',
+            self::ACTION_LOGOUT => 'Logout dashboard',
+            self::ACTION_VIEW_LICENSE => 'Lihat lisensi',
+            self::ACTION_RESET_HWID => 'Reset HWID',
+            self::ACTION_DOWNLOAD_PRODUCT => 'Download script',
+            self::ACTION_RENEW_LICENSE => 'Perpanjang lisensi',
+            self::ACTION_LICENSE_BANNED => 'Lisensi dibanned',
+            self::ACTION_LICENSE_SUSPENDED => 'Lisensi disuspend',
+            self::ACTION_LICENSE_ACTIVATED => 'Lisensi diaktivasi',
+            default => str_replace('_', ' ', ucfirst($action)),
+        };
+    }
 }

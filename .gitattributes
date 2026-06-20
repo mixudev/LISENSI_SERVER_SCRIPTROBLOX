@@ -1,0 +1,2 @@
+git add --renormalize .
+git commit -m "fix: force LF line endings for shell scripts"

@@ -30,12 +30,28 @@ async function safeRequest(requestFn) {
     };
   } catch (error) {
     if (error.response) {
+      const body = error.response.data;
+      const isJson =
+        body &&
+        typeof body === 'object' &&
+        !Array.isArray(body) &&
+        !(typeof body === 'string' && body.trim().startsWith('<'));
+
+      let message = body?.message;
+      if (!message) {
+        if (error.response.status === 404 && !isJson) {
+          message =
+            'Backend tidak dapat dijangkau (HTTP 404). ' +
+            'Pastikan LARAVEL_API_URL=http://nginx saat bot berjalan di Docker — jangan gunakan URL ngrok.';
+        } else {
+          message = `Server menolak permintaan (HTTP ${error.response.status}).`;
+        }
+      }
+
       return {
         success: false,
-        data: error.response.data || null,
-        message:
-          error.response.data?.message ||
-          `Server menolak permintaan (HTTP ${error.response.status}).`,
+        data: body || null,
+        message,
         statusCode: error.response.status,
       };
     }

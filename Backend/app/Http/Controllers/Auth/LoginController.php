@@ -38,6 +38,14 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
+        if (! $user->isAdmin()) {
+            \App\Models\LicenseActivity::log(
+                action: \App\Models\LicenseActivity::ACTION_LOGIN,
+                userId: $user->id,
+                request: $request
+            );
+        }
+
         return $user->isAdmin()
             ? redirect()->intended(route('admin.dashboard'))
             : redirect()->intended(route('user.dashboard'));

@@ -185,6 +185,8 @@ Total panjang: **31 karakter**. Digenerate dengan `random_bytes()` (kriptografis
 
 ## Instalasi
 
+> **Menjalankan via Docker?** Lihat panduan lengkap di [`../DOCKER.md`](../DOCKER.md) — termasuk setup, ngrok, dan troubleshooting bot/CSS.
+
 ### Prasyarat
 
 - PHP 8.3+ dengan ekstensi: `pdo_mysql`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `json`, `bcmath`

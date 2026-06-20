@@ -13,6 +13,9 @@
             {{ $expiringLicenses->count() }} lisensi akan expired dalam 7 hari
         </p>
         <p class="text-xs text-amber-700 dark:text-amber-400 mt-0.5">Segera hubungi admin untuk perpanjangan.</p>
+        <div class="mt-3">
+            @include('dashboard.user.partials.contact-extend')
+        </div>
     </div>
 </div>
 @endif
@@ -115,6 +118,32 @@
     </div>
     @endforelse
 </div>
+
+{{-- ══ RECENT ACTIVITIES ══ --}}
+@if ($recentActivities->isNotEmpty())
+<div class="mb-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+    <div class="px-5 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <span class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Aktivitas Terbaru</span>
+        <a href="{{ route('user.activities.index') }}"
+            class="text-[10px] font-semibold text-violet-600 dark:text-violet-400 hover:underline">
+            Lihat semua →
+        </a>
+    </div>
+    @foreach ($recentActivities as $activity)
+    <div class="px-5 py-3 border-b border-slate-100 dark:border-slate-800 last:border-0 flex items-center justify-between gap-4">
+        <div class="min-w-0">
+            <p class="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                {{ \App\Models\LicenseActivity::labelFor($activity->action) }}
+            </p>
+            @if ($activity->license)
+                <p class="text-[10px] font-mono text-slate-400 truncate">{{ $activity->license->license_key }}</p>
+            @endif
+        </div>
+        <span class="text-[10px] font-mono text-slate-400 shrink-0">{{ $activity->created_at->diffForHumans() }}</span>
+    </div>
+    @endforeach
+</div>
+@endif
 
 {{-- ══ PANDUAN PENGGUNAAN ROBLOX EXECUTOR ══ --}}
 <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
