@@ -1,2 +1,59 @@
-git add --renormalize .
-git commit -m "fix: force LF line endings for shell scripts"
+# =============================================================================
+# .gitattributes — Normalisasi line ending
+# Mencegah error "no such file or directory" pada shell script di Docker
+# akibat CRLF line ending yang ditambahkan otomatis oleh Git/editor Windows.
+# =============================================================================
+
+# Default: auto-detect text files, normalisasi ke LF di repository
+* text=auto eol=lf
+
+# Shell scripts — WAJIB LF, akan rusak (gagal exec) di Linux container jika CRLF
+*.sh text eol=lf
+docker-entrypoint.sh text eol=lf
+
+# Docker
+Dockerfile text eol=lf
+*.dockerfile text eol=lf
+docker-compose*.yml text eol=lf
+docker-compose*.yaml text eol=lf
+
+# Config & data
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.env text eol=lf
+*.env.example text eol=lf
+*.ini text eol=lf
+*.conf text eol=lf
+
+# Source code
+*.php text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.lua text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.blade.php text eol=lf
+*.md text eol=lf
+
+# Windows-specific scripts boleh tetap CRLF
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary files — jangan disentuh sama sekali
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.pdf binary
+*.zip binary
+*.tar binary
+*.gz binary

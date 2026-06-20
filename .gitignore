@@ -1,0 +1,93 @@
+# =============================================================================
+# .gitignore — SCRIPT_LISENSI (Laravel + Node.js + Docker)
+# =============================================================================
+
+# ─── Environment files (JANGAN PERNAH commit) ───────────────────────────────
+.env
+.env.backup
+.env.production
+Backend/.env
+Backend/.env.backup
+Bot_Server/.env
+Bot_Server/.env.backup
+
+# ─── Laravel ─────────────────────────────────────────────────────────────────
+Backend/vendor/
+Backend/node_modules/
+Backend/public/build/
+Backend/public/hot
+Backend/storage/*.key
+Backend/storage/app/*
+!Backend/storage/app/.gitkeep
+!Backend/storage/app/public
+Backend/storage/app/public/*
+!Backend/storage/app/public/.gitkeep
+Backend/storage/framework/cache/*
+!Backend/storage/framework/cache/.gitkeep
+Backend/storage/framework/sessions/*
+!Backend/storage/framework/sessions/.gitkeep
+Backend/storage/framework/testing/*
+!Backend/storage/framework/testing/.gitkeep
+Backend/storage/framework/views/*
+!Backend/storage/framework/views/.gitkeep
+Backend/storage/logs/*
+!Backend/storage/logs/.gitkeep
+Backend/storage/app/private/scripts/*
+!Backend/storage/app/private/scripts/.gitkeep
+Backend/bootstrap/cache/*.php
+!Backend/bootstrap/cache/.gitkeep
+Backend/.phpunit.cache
+Backend/.phpunit.result.cache
+Backend/Homestead.json
+Backend/Homestead.yaml
+Backend/auth.json
+
+# ─── Node.js (Backend frontend assets + Bot_Server) ─────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+Bot_Server/node_modules/
+Bot_Server/npm-debug.log*
+
+# ─── Docker ──────────────────────────────────────────────────────────────────
+docker/mysql/data/
+*.local.override.yml
+
+# ─── IDE / Editor ────────────────────────────────────────────────────────────
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.fleet/
+*.code-workspace
+
+# ─── OS ──────────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ─── Logs & runtime ──────────────────────────────────────────────────────────
+*.log
+logs/
+*.pid
+*.seed
+*.pid.lock
+
+# ─── License/secret artifacts spesifik project ini ──────────────────────────
+Backend/storage/app/private/scripts/**/*
+!Backend/storage/app/private/scripts/.gitkeep
+*.pem
+*.key
+ngrok.yml

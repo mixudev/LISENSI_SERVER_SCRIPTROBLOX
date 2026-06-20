@@ -49,8 +49,17 @@ run_migrations() {
     fi
 }
 
+sync_build_assets() {
+    if [ -d /var/www/html/public/build-image ]; then
+        echo "Syncing frontend build assets..."
+        rm -rf /var/www/html/public/build/*
+        cp -r /var/www/html/public/build-image/. /var/www/html/public/build/
+    fi
+}
+
 if [ "$(id -u)" = "0" ]; then
     fix_permissions
+    sync_build_assets
 fi
 
 if [ "${WAIT_FOR_DB:-true}" = "true" ]; then

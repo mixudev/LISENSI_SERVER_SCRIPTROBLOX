@@ -61,7 +61,7 @@ WORKDIR /var/www/html
 
 COPY --chown=www-data:www-data Backend/ ./
 COPY --from=vendor --chown=www-data:www-data /app/vendor ./vendor
-COPY --from=frontend --chown=www-data:www-data /app/public/build ./public/build
+COPY --from=frontend --chown=www-data:www-data /app/public/build ./public/build-image
 
 RUN mkdir -p \
         storage/framework/cache/data \
