@@ -114,6 +114,15 @@ Route::prefix('admin')
         Route::patch('/ai-keys/{aiKey}/toggle', [Admin\AiKeyController::class, 'toggleActive'])->name('ai-keys.toggle');
         Route::patch('/ai-keys/{aiKey}/reset-errors', [Admin\AiKeyController::class, 'resetErrors'])->name('ai-keys.reset-errors');
         Route::delete('/ai-keys/{aiKey}', [Admin\AiKeyController::class, 'destroy'])->name('ai-keys.destroy');
+
+        // Reminders
+        Route::get('/reminders', [Admin\ReminderController::class, 'index'])->name('reminders.index');
+        Route::delete('/reminders/{id}', [Admin\ReminderController::class, 'destroy'])->name('reminders.destroy');
+
+        // Playlists
+        Route::get('/playlists', [Admin\PlaylistController::class, 'index'])->name('playlists.index');
+        Route::delete('/playlists/{key}/track/{index}', [Admin\PlaylistController::class, 'destroyTrack'])->name('playlists.destroy-track');
+        Route::delete('/playlists/{key}', [Admin\PlaylistController::class, 'destroyPlaylist'])->name('playlists.destroy-playlist');
     });
 
 // ── Dashboard User ────────────────────────────────────────────────────────

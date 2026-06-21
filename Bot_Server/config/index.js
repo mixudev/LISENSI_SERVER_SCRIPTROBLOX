@@ -2,8 +2,6 @@ require('dotenv').config();
 
 /**
  * Daftar environment variable yang WAJIB ada.
- * Jika salah satu tidak ditemukan, bot akan langsung berhenti (fail-fast)
- * agar tidak terjadi error tak terduga saat runtime.
  */
 const REQUIRED_ENV_VARS = [
   'DISCORD_TOKEN',
@@ -31,22 +29,20 @@ module.exports = {
     clientId: process.env.CLIENT_ID,
     dashboardChannelId: process.env.DASHBOARD_CHANNEL_ID,
     adminRoleId: process.env.ADMIN_ROLE_ID,
-    // User ID individual yang diizinkan Generate Key (tanpa perlu Role)
     adminUserIds: (process.env.ADMIN_USER_IDS || '')
       .split(',')
       .map((id) => id.trim())
       .filter(Boolean),
-    // Channel khusus Admin Panel (opsional — jika kosong, panel admin dilewati)
     adminChannelId: process.env.ADMIN_CHANNEL_ID || null,
-    // Channel khusus Roblox Link Panel (opsional — jika kosong, panel roblox dilewati)
     robloxChannelId: process.env.ROBLOX_CHANNEL_ID || null,
-    // Category ID untuk membuat channel private tiket (opsional)
     ticketCategoryId: process.env.TICKET_CATEGORY_ID || null,
-    // Channel khusus untuk memposting tombol "Open Ticket" (opsional)
     ticketChannelId: process.env.TICKET_CHANNEL_ID || null,
+    // Fitur Reminder & Playlist
+    reminderChannelId: process.env.REMINDER_CHANNEL_ID || null,
+    playlistChannelId: process.env.PLAYLIST_CHANNEL_ID || null,
   },
   laravel: {
-    apiUrl: process.env.LARAVEL_API_URL.replace(/\/+$/, ''), // hapus trailing slash
+    apiUrl: process.env.LARAVEL_API_URL.replace(/\/+$/, ''),
     apiToken: process.env.LARAVEL_API_TOKEN,
     timeout: Number(process.env.LARAVEL_API_TIMEOUT) || 8000,
   },

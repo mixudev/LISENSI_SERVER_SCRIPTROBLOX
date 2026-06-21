@@ -4,12 +4,14 @@ FROM node:20-alpine AS base
 
 WORKDIR /app
 
-RUN apk add --no-cache bash curl dos2unix \
+RUN apk add --no-cache bash curl dos2unix ffmpeg python3 make g++ \
     && addgroup -S bot \
     && adduser -S bot -G bot
 
 COPY Bot_Server/package.json Bot_Server/package-lock.json* ./
-RUN npm ci --omit=dev --ignore-scripts
+RUN CFLAGS="-Wno-incompatible-pointer-types -Wno-error=incompatible-pointer-types" \
+    CXXFLAGS="-Wno-incompatible-pointer-types -Wno-error=incompatible-pointer-types" \
+    npm ci --omit=dev
 
 COPY Bot_Server/ ./
 

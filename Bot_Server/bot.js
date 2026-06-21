@@ -13,16 +13,33 @@ const PanelManager    = require('./services/panelManager');
 const laravelService  = require('./services/laravelService');
 const { errorEmbed }  = require('./utils/replyHelper');
 const wolfCommand     = require('./interactions/commands/wolf');
+const remindmeCommand = require('./interactions/commands/remindme');
+const focusCommand    = require('./interactions/commands/focus');
+const playCommand     = require('./interactions/commands/play');
+const skipCommand     = require('./interactions/commands/skip');
+const stopCommand     = require('./interactions/commands/stop');
+const pauseCommand    = require('./interactions/commands/pause');
+const resumeCommand   = require('./interactions/commands/resume');
+const reminderService = require('./services/reminderService');
+const handleRemindMessageCommand = require('./interactions/commands/remindMessage');
 
 // ─── Import semua panel ────────────────────────────────────────────────────────
-const publicPanel = require('./panels/publicPanel'); // Channel user umum
-const adminPanel  = require('./panels/adminPanel');  // Channel khusus admin
-const robloxPanel = require('./panels/robloxPanel'); // Channel kaitan Roblox
-const ticketPanel = require('./panels/ticketPanel'); // Channel sistem tiket
+const publicPanel   = require('./panels/publicPanel');   // Channel user umum
+const adminPanel    = require('./panels/adminPanel');    // Channel khusus admin
+const robloxPanel   = require('./panels/robloxPanel');   // Channel kaitan Roblox
+const ticketPanel   = require('./panels/ticketPanel');   // Channel sistem tiket
+const reminderPanel = require('./panels/reminderPanel'); // Channel sistem pengingat
+const playlistPanel = require('./panels/playlistPanel'); // Channel playlist manager
+const focusPanel    = require('./panels/focusPanel');    // Panel virtual Pomodoro Focus
 
 // ─── Discord Client ────────────────────────────────────────────────────────────
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.MessageContent,
+  ],
   partials: [Partials.Channel, Partials.Message],
 });
 
@@ -32,7 +49,10 @@ panelManager
   .register(publicPanel)
   .register(adminPanel)
   .register(robloxPanel)
-  .register(ticketPanel);
+  .register(ticketPanel)
+  .register(reminderPanel)
+  .register(playlistPanel)
+  .register(focusPanel);
 
 // Fungsi sinkronisasi daftar Discord Admin dari Laravel Database
 async function syncDiscordAdmins() {
@@ -55,6 +75,7 @@ async function syncDiscordAdmins() {
 }
 
 // ─── Event: Bot Ready ─────────────────────────────────────────────────────────
+// ─── Event: Bot Ready ─────────────────────────────────────────────────────────
 client.once('ready', async () => {
   console.log(`🤖 Bot login sebagai ${client.user.tag}`);
   console.log(`📋 Panel terdaftar: ${panelManager.panels.map((p) => p.name).join(', ')}`);
@@ -68,13 +89,26 @@ client.once('ready', async () => {
     console.error('   Periksa LARAVEL_API_URL dan LARAVEL_API_TOKEN di .env Bot_Server');
   }
 
+  // Inisialisasi service pengingat (menjadwalkan ulang reminder yang tertunda)
+  reminderService.init(client);
+
   // Sinkronisasi Admin awal dan atur interval berkala (60 detik)
   await syncDiscordAdmins();
   setInterval(syncDiscordAdmins, 60000);
 
-  // Daftarkan slash command /wolf ke Discord (Guild level & Global backup)
+  // Daftarkan slash commands ke Discord (Guild level & Global backup)
   const rest = new REST({ version: '10' }).setToken(config.discord.token);
-  const commandData = [wolfCommand.data.toJSON()];
+  const commandData = [
+    wolfCommand.data.toJSON(),
+    remindmeCommand.data.toJSON(),
+    focusCommand.data.toJSON(),
+    playCommand.data.toJSON(),
+    skipCommand.data.toJSON(),
+    stopCommand.data.toJSON(),
+    pauseCommand.data.toJSON(),
+    resumeCommand.data.toJSON(),
+  ];
+
   try {
     console.log('⏳ Mendaftarkan slash commands...');
     // 1. Guild level (instan untuk server tempat bot bergabung)
@@ -103,11 +137,16 @@ client.once('ready', async () => {
   panelManager.watchMessages();
 });
 
-// ─── Event: Interaksi (Button, Modal, & Slash Command) ────────────────────────
+// ─── Event: Interaksi (Button, Modal, SelectMenu, & Slash Command) ─────────────
 client.on('interactionCreate', async (interaction) => {
   try {
     if (interaction.isButton()) {
       await panelManager.routeButton(interaction);
+      return;
+    }
+
+    if (interaction.isStringSelectMenu()) {
+      await panelManager.routeSelectMenu(interaction);
       return;
     }
 
@@ -119,6 +158,20 @@ client.on('interactionCreate', async (interaction) => {
     if (interaction.isChatInputCommand()) {
       if (interaction.commandName === 'wolf') {
         await wolfCommand.execute(interaction);
+      } else if (interaction.commandName === 'remindme') {
+        await remindmeCommand.execute(interaction);
+      } else if (interaction.commandName === 'focus') {
+        await focusCommand.execute(interaction);
+      } else if (interaction.commandName === 'play') {
+        await playCommand.execute(interaction);
+      } else if (interaction.commandName === 'skip') {
+        await skipCommand.execute(interaction);
+      } else if (interaction.commandName === 'stop') {
+        await stopCommand.execute(interaction);
+      } else if (interaction.commandName === 'pause') {
+        await pauseCommand.execute(interaction);
+      } else if (interaction.commandName === 'resume') {
+        await resumeCommand.execute(interaction);
       }
       return;
     }
@@ -139,6 +192,15 @@ client.on('interactionCreate', async (interaction) => {
     } catch (replyError) {
       console.error('❌ Gagal mengirim pesan error ke user:', replyError);
     }
+  }
+});
+
+// ─── Event: Message Create (untuk command prefix !remind) ─────────────────────
+client.on('messageCreate', async (message) => {
+  if (message.author.bot || !message.guildId) return;
+
+  if (message.content.startsWith('!remind ')) {
+    await handleRemindMessageCommand(message);
   }
 });
 

@@ -73,6 +73,7 @@ services:
       - ./Backend/storage:/var/www/html/storage
       - ./Backend/.env:/var/www/html/.env
       - ./Backend/public/build:/var/www/html/public/build
+      - ./Bot_Server/data:/var/www/html/storage/bot_data
     depends_on:
       mysql:
         condition: service_healthy
@@ -146,6 +147,8 @@ services:
         condition: service_healthy
       nginx:
         condition: service_started
+    volumes:
+      - ./Bot_Server/data:/app/data
     networks:
       - sl-network
 

@@ -6,7 +6,6 @@ const { EmbedBuilder } = require('discord.js');
 function errorEmbed(message) {
   return new EmbedBuilder()
     .setColor(0xed4245)
-    .setTitle('❌ Gagal')
     .setDescription(message)
     .setTimestamp();
 }
@@ -15,11 +14,19 @@ function errorEmbed(message) {
  * Embed standar untuk pesan sukses (warna hijau).
  */
 function successEmbed(title, message) {
-  return new EmbedBuilder()
+  const embed = new EmbedBuilder()
     .setColor(0x57f287)
-    .setTitle(title || '✅ Berhasil')
-    .setDescription(message)
     .setTimestamp();
+
+  if (message) {
+    embed.setTitle(title);
+    embed.setDescription(message);
+  } else {
+    // Jika dipanggil dengan 1 argument, anggap itu pesan utama tanpa judul
+    embed.setDescription(title);
+  }
+
+  return embed;
 }
 
 /**
@@ -28,7 +35,6 @@ function successEmbed(title, message) {
 function forbiddenEmbed(message) {
   return new EmbedBuilder()
     .setColor(0xfee75c)
-    .setTitle('🚫 Akses Ditolak')
     .setDescription(message || 'Anda tidak memiliki izin untuk menggunakan fitur ini.')
     .setTimestamp();
 }
@@ -40,7 +46,7 @@ function forbiddenEmbed(message) {
  * @param {import('discord.js').Interaction} interaction
  * @param {number} [delayMs=20000] - Waktu sebelum dihapus (default: 20 detik)
  */
-function autoDeleteReply(interaction, delayMs = 20_000) {
+function autoDeleteReply(interaction, delayMs = 5000) {
   setTimeout(() => {
     interaction.deleteReply().catch(() => {
       // Abaikan jika sudah terhapus atau token expired

@@ -7,6 +7,9 @@ fix_permissions() {
     if [ -d storage ] && [ -d bootstrap/cache ]; then
         chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
         chmod -R 775 storage bootstrap/cache 2>/dev/null || true
+        if [ -d storage/bot_data ]; then
+            chmod -R 777 storage/bot_data 2>/dev/null || true
+        fi
     fi
 }
 

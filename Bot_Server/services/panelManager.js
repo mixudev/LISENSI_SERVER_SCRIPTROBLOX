@@ -59,6 +59,10 @@ class PanelManager {
   async ensurePanel(panel) {
     const channelId = panel.getChannelId();
 
+    if (channelId === null) {
+      return; // Skip virtual panels silently
+    }
+
     if (!channelId) {
       console.warn(`⚠️  Panel "${panel.name}": CHANNEL_ID belum diisi di .env, dilewati.`);
       return;
@@ -160,6 +164,23 @@ class PanelManager {
       }
     }
     console.warn(`⚠️  Tidak ada handler untuk modal customId: "${interaction.customId}"`);
+    return false;
+  }
+
+  /**
+   * Route interaksi select menu ke panel yang memiliki handler untuk customId tersebut.
+   * @param {import('discord.js').StringSelectMenuInteraction} interaction
+   * @returns {Promise<boolean>} true jika handler ditemukan
+   */
+  async routeSelectMenu(interaction) {
+    for (const panel of this.panels) {
+      const handler = panel.selectMenuHandlers?.[interaction.customId];
+      if (handler) {
+        await handler(interaction);
+        return true;
+      }
+    }
+    console.warn(`⚠️  Tidak ada handler untuk select menu customId: "${interaction.customId}"`);
     return false;
   }
 

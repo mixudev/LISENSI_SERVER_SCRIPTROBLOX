@@ -15,6 +15,8 @@
     $navDiscord = [
         ['href' => route('admin.discord-admins.index'), 'path' => '/admin/discord-admins', 'label' => 'Admin Discord', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>'],
         ['href' => route('admin.ai-keys.index'),         'path' => '/admin/ai-keys',         'label' => 'AI Bot Settings', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364.364l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>'],
+        ['href' => route('admin.reminders.index'),       'path' => '/admin/reminders',       'label' => 'Reminders',     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />'],
+        ['href' => route('admin.playlists.index'),       'path' => '/admin/playlists',       'label' => 'Playlists',     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2Zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2ZM9 10l12-3"/>'],
     ];
 @endphp
 
