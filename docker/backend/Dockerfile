@@ -33,6 +33,7 @@ RUN apk add --no-cache \
     bash \
     curl \
     dos2unix \
+    netcat-openbsd \
     su-exec \
     freetype-dev \
     icu-dev \

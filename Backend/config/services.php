@@ -54,4 +54,17 @@ return [
         ))),
     ],
 
+    'roblox' => [
+        'client_id' => env('ROBLOX_CLIENT_ID'),
+        'client_secret' => env('ROBLOX_CLIENT_SECRET'),
+        'redirect_uri' => env('ROBLOX_REDIRECT_URI'),
+    ],
+
+    'midtrans' => [
+        'server_key' => env('MIDTRANS_SERVER_KEY'),
+        'is_production' => env('MIDTRANS_IS_PRODUCTION', false),
+        'client_key' => env('MIDTRANS_CLIENT_KEY'),
+        'license_price' => env('MIDTRANS_LICENSE_PRICE', 50000), // default 50rb
+    ],
+
 ];

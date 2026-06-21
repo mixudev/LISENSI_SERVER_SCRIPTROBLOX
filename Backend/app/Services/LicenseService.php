@@ -37,6 +37,7 @@ class LicenseService
 
         return License::create([
             'user_id' => $data['user_id'] ?? null,
+            'discord_id' => $data['discord_id'] ?? null,
             'product_id' => null, // lisensi tidak terikat produk
             'license_type' => $data['license_type'] ?? 'user',
             'expired_at' => ($durationDays !== null && (int) $durationDays > 0)
@@ -101,6 +102,13 @@ class LicenseService
         ?string $placeId = null
     ): License {
         $license = $this->activate($licenseKey, $hwid, $request);
+
+        // Enforce Roblox username binding if the user has one linked
+        if ($license->user && !empty($license->user->roblox_username)) {
+            if (empty($robloxUsername) || strcasecmp($license->user->roblox_username, $robloxUsername) !== 0) {
+                throw new \RuntimeException("Username Roblox tidak cocok dengan akun yang terikat ({$license->user->roblox_username}).");
+            }
+        }
 
         $license->roblox_username = $robloxUsername ?: null;
         $license->roblox_place_id = $placeId ?: null;

@@ -1,4 +1,4 @@
-# LimeHub License Server
+# WOLF License Server
 
 Sistem manajemen lisensi software berbasis **Laravel 13**, dengan validasi HWID, distribusi script Lua untuk executor Roblox (Synapse, Solara, dll), dashboard admin/user, dan integrasi **Discord bot** untuk manajemen lisensi langsung dari server Discord. Seluruh stack dikemas dalam **Docker Compose** untuk kemudahan deployment.
 
@@ -375,7 +375,7 @@ composer run setup
 ### `Backend/.env`
 
 ```env
-APP_NAME="LimeHub License"
+APP_NAME="WOLF License"
 APP_URL=https://domain-anda.com      # Harus HTTPS di production
 APP_ENV=production
 APP_DEBUG=false
@@ -481,14 +481,14 @@ GET /api/license/get?key=LZD-FC8198-3661ED-2A72BA-16FCA3&hwid=12345678&username=
 
 **Response sukses:** Lua script (`Content-Type: text/plain`), disisipi sesi modul di awal:
 ```lua
--- LimeHub protected session
-_G.LIMEHUB_MODULE_TOKEN = "abc123..."
-_G.LIMEHUB_BASE_URL = "https://domain.com/modules/abc123..."
+-- WOLF protected session
+_G.WOLF_MODULE_TOKEN = "abc123..."
+_G.WOLF_BASE_URL = "https://domain.com/modules/abc123..."
 ```
 
 **Response gagal:** Lua error string (HTTP 200 agar executor tidak throw network error):
 ```lua
-error("[LimeHub] License key tidak ditemukan.")
+error("[WOLF] License key tidak ditemukan.")
 ```
 
 ### POST `/api/license/inject` (Legacy)

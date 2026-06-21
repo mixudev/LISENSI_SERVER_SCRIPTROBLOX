@@ -85,6 +85,7 @@ class LicenseController extends Controller
             'license_type' => ['required', 'in:user,admin'],
             'ban_reason' => ['nullable', 'string', 'max:1000'],
             'user_id' => ['nullable', 'exists:users,id'],
+            'discord_id' => ['nullable', 'string', 'max:32'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ]);
 

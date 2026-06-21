@@ -112,10 +112,120 @@ function getScriptTemplate(discordId) {
   );
 }
 
+function redeemKey(licenseKey, discordId, displayName) {
+  return safeRequest(() =>
+    apiClient.post('/api/bot/redeem', {
+      license_key: licenseKey,
+      discord_id: discordId,
+      display_name: displayName,
+    })
+  );
+}
+
+function linkRoblox(discordId, robloxUsername) {
+  return safeRequest(() =>
+    apiClient.post('/api/bot/link-roblox', {
+      discord_id: discordId,
+      roblox_username: robloxUsername,
+    })
+  );
+}
+
+function getRobloxLinkUrl(discordId) {
+  return safeRequest(() =>
+    apiClient.get('/api/bot/link-roblox/url', {
+      params: { discord_id: discordId },
+    })
+  );
+}
+
+function createTicket(discordId, channelId, ticketType = 'support') {
+  return safeRequest(() =>
+    apiClient.post('/api/bot/tickets', {
+      discord_id: discordId,
+      channel_id: channelId,
+      ticket_type: ticketType,
+    })
+  );
+}
+
+function checkTicketPayment(channelId) {
+  return safeRequest(() =>
+    apiClient.post('/api/bot/tickets/check-payment', {
+      channel_id: channelId,
+    })
+  );
+}
+
+function processTicket(channelId, processedBy) {
+  return safeRequest(() =>
+    apiClient.post('/api/bot/tickets/process', {
+      channel_id: channelId,
+      processed_by: processedBy,
+    })
+  );
+}
+
+function closeTicket(channelId, closedBy) {
+  return safeRequest(() =>
+    apiClient.post('/api/bot/tickets/close', {
+      channel_id: channelId,
+      closed_by: closedBy,
+    })
+  );
+}
+
+function listUsers() {
+  return safeRequest(() => apiClient.get('/api/bot/list-users'));
+}
+
+function revokeKey(targetDiscordId, actorDiscordId) {
+  return safeRequest(() =>
+    apiClient.post('/api/bot/revoke', {
+      target_discord_id: targetDiscordId,
+      actor_discord_id: actorDiscordId,
+    })
+  );
+}
+
+function getServerStats() {
+  return safeRequest(() => apiClient.get('/api/bot/server-stats'));
+}
+
+function getTicket(channelId) {
+  return safeRequest(() => apiClient.get(`/api/bot/tickets/${channelId}`));
+}
+
+function getDiscordAdmins() {
+  return safeRequest(() => apiClient.get('/api/bot/discord-admins'));
+}
+
+function askAi(prompt, discordId) {
+  return safeRequest(() =>
+    apiClient.post('/api/bot/ai/chat', {
+      prompt,
+      discord_id: discordId,
+    })
+  );
+}
+
 module.exports = {
   checkHealth,
   getLicenseStats,
   resetHwid,
   generateKey,
   getScriptTemplate,
+  redeemKey,
+  linkRoblox,
+  getRobloxLinkUrl,
+  createTicket,
+  processTicket,
+  closeTicket,
+  listUsers,
+  revokeKey,
+  getServerStats,
+  getTicket,
+  checkTicketPayment,
+  getDiscordAdmins,
+  askAi,
 };

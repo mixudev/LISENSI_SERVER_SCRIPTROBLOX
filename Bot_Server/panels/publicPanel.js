@@ -16,7 +16,7 @@ const config = require('../config');
 
 // Prefix "pub_" untuk menghindari konflik customId dengan panel lain
 const BUTTON_IDS = {
-  GET_KEY:    'pub_get_key',
+  REDEEM_KEY: 'pub_redeem_key',
   RESET_HWID: 'pub_reset_hwid',
   GET_SCRIPT: 'pub_get_script',
   GET_STATS:  'pub_get_stats',
@@ -31,7 +31,7 @@ function getPayload() {
         'Gunakan tombol di bawah untuk mengelola lisensi software Anda.',
         'Semua respon bersifat **privat** dan hanya terlihat oleh Anda.',
         '',
-        ' **Get Key** — Tampilkan license key Anda.',
+        ' **Redeem Key** — Mengikat license key Anda ke Discord.',
         ' **Reset HWID** — Membuka kunci HWID pada lisensi Anda.',
         ' **Get Script** — Mengambil script loader terbaru.',
         ' **Get Stats** — Melihat status & detail lisensi Anda.',
@@ -42,8 +42,8 @@ function getPayload() {
 
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
-      .setCustomId(BUTTON_IDS.GET_KEY)
-      .setLabel('Get Key')
+      .setCustomId(BUTTON_IDS.REDEEM_KEY)
+      .setLabel('Redeem Key')
       .setEmoji('🔑')
       .setStyle(ButtonStyle.Success),
     new ButtonBuilder()
@@ -67,10 +67,14 @@ function getPayload() {
 }
 
 // Handler untuk setiap tombol
-const handleGetKey    = require('../interactions/buttons/getKey');
+const handleRedeemKey = require('../interactions/buttons/redeemKey');
 const handleResetHwid = require('../interactions/buttons/resetHwid');
 const handleGetScript = require('../interactions/buttons/getScript');
 const handleGetStats  = require('../interactions/buttons/getStats');
+
+// Handler untuk modal submit
+const handleRedeemKeyModalSubmit = require('../interactions/modals/redeemKeyModal');
+const { PUB_REDEEM_KEY_MODAL_ID } = require('../interactions/buttons/redeemKey');
 
 module.exports = {
   name: 'public',
@@ -83,12 +87,14 @@ module.exports = {
 
   /** Map customId → handler function */
   buttonHandlers: {
-    [BUTTON_IDS.GET_KEY]:    handleGetKey,
+    [BUTTON_IDS.REDEEM_KEY]: handleRedeemKey,
     [BUTTON_IDS.RESET_HWID]: handleResetHwid,
     [BUTTON_IDS.GET_SCRIPT]: handleGetScript,
     [BUTTON_IDS.GET_STATS]:  handleGetStats,
   },
 
-  /** Tidak ada modal di panel public */
-  modalHandlers: {},
+  /** Modal handlers */
+  modalHandlers: {
+    [PUB_REDEEM_KEY_MODAL_ID]: handleRedeemKeyModalSubmit,
+  },
 };

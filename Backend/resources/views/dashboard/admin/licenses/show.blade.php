@@ -103,6 +103,7 @@
                         ['label' => 'Tipe Lisensi',  'value' => $licenseType === 'admin' ? 'Admin' : 'User', 'mono' => false],
                         ['label' => 'Pemilik',        'value' => $license->user?->name ?? 'Belum di-assign', 'mono' => false],
                         ['label' => 'Email Pemilik',  'value' => $license->user?->email ?? '—', 'mono' => false],
+                        ['label' => 'Discord ID',     'value' => $license->discord_id ?? '—', 'mono' => true],
                         ['label' => 'Dibuat oleh',    'value' => $license->creator?->name ?? 'System', 'mono' => false],
                         ['label' => 'Diaktifkan',     'value' => $license->activated_at?->format('d M Y, H:i') ?? 'Belum aktivasi', 'mono' => false],
                         ['label' => 'Expired',        'value' => $license->expired_at?->format('d M Y, H:i') ?? 'Lifetime', 'mono' => false],
@@ -295,6 +296,10 @@
             <div>
                 <label class="modal-label">Assign User (ID)</label>
                 <input type="number" name="user_id" class="modal-input" value="{{ $license->user_id }}" placeholder="ID user">
+            </div>
+            <div>
+                <label class="modal-label">Discord ID</label>
+                <input type="text" name="discord_id" class="modal-input" value="{{ $license->discord_id }}" placeholder="Discord User ID">
             </div>
             <div class="col-span-2">
                 <label class="modal-label">Alasan Ban / Suspend</label>

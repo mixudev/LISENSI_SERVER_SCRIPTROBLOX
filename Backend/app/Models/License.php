@@ -14,6 +14,7 @@ class License extends Model
 
     protected $fillable = [
         'user_id',
+        'discord_id',
         'product_id',
         'license_key',
         'license_type',

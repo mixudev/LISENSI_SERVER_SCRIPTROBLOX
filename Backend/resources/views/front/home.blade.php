@@ -337,7 +337,13 @@
                 </div>
             </div>
             <div class="border-t border-white/10 pt-7">
-                <span class="text-xs text-white/25">&copy; {{ now()->year }} {{ config('app.name') }}. Hak cipta dilindungi.</span>
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <span class="text-xs text-white/25">&copy; {{ now()->year }} {{ config('app.name') }}. Hak cipta dilindungi.</span>
+                    <div class="flex items-center gap-4">
+                        <a href="{{ route('privacy') }}" class="text-xs text-white/25 no-underline transition hover:text-white/60">Kebijakan Privasi</a>
+                        <a href="{{ route('terms') }}" class="text-xs text-white/25 no-underline transition hover:text-white/60">Syarat &amp; Ketentuan</a>
+                    </div>
+                </div>
             </div>
         </div>
     </footer>

@@ -59,24 +59,20 @@ main() {
     sleep 5
     clear_laravel_cache
 
-    # ─── ngrok ───────────────────────────────────────────────────────────────
-    if [ -n "${NGROK_AUTHTOKEN:-}" ]; then
-        log_info "Menjalankan ngrok tunnel..."
-        compose --profile ngrok up -d ngrok
+    # ─── Gunakan static ngrok URL (jalankan manual di terminal lain) ───────────
+    # Perintah: ngrok http --url=unfertile-proconsularly-dorris.ngrok-free.dev 8000
+    local static_url="https://unfertile-proconsularly-dorris.ngrok-free.dev"
+    log_info "Menggunakan static ngrok URL: ${static_url}"
+    log_warn "Pastikan ngrok sudah running di terminal lain:"
+    log_warn "  ngrok http --url=unfertile-proconsularly-dorris.ngrok-free.dev 8000"
 
-        bash "${ROOT_DIR}/docker/scripts/update-env-url.sh"
-        # Pastikan bot tetap pakai URL internal Docker
-        set_env_var "${BOT_ENV}" "LARAVEL_API_URL" "http://nginx"
-    else
-        log_warn "NGROK_AUTHTOKEN kosong di .env — ngrok tidak dijalankan"
-        local local_url="http://localhost:${APP_PORT:-8000}"
-        set_env_var "${BACKEND_ENV}" "APP_URL" "${local_url}"
-        set_env_var "${BOT_ENV}" "LARAVEL_API_URL" "http://nginx"
-        compose restart bot >/dev/null 2>&1 || true
-        clear_laravel_cache
-        log_info "APP_URL diset ke ${local_url} (tanpa ngrok)"
-        log_info "Untuk Roblox testing, isi NGROK_AUTHTOKEN di .env lalu jalankan ulang ./start.sh"
-    fi
+    set_env_var "${BACKEND_ENV}" "APP_URL" "${static_url}"
+    set_env_var "${BACKEND_ENV}" "MIDTRANS_NOTIFICATION_URL" "${static_url}/api/midtrans/callback"
+    set_env_var "${BOT_ENV}" "LARAVEL_API_URL" "http://nginx"
+
+    log_ok "Backend/.env → APP_URL=${static_url}"
+    log_ok "Backend/.env → MIDTRANS_NOTIFICATION_URL=${static_url}/api/midtrans/callback"
+    log_ok "Bot_Server/.env → LARAVEL_API_URL=http://nginx (internal Docker)"
 
     echo ""
     log_ok "Semua service berjalan!"

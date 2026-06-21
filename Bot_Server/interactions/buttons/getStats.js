@@ -25,7 +25,7 @@ async function handleGetStats(interaction) {
 
   const statsEmbed = {
     color: 0x5865f2,
-    title: '📊 Statistik Lisensi Anda',
+    title: 'Statistik Lisensi Anda',
     fields: [
       { name: 'License Key',     value: `\`${license.key || 'N/A'}\``,                               inline: false },
       { name: 'Status',          value: formatStatus(license.status),                                  inline: true  },
@@ -34,7 +34,7 @@ async function handleGetStats(interaction) {
       { name: 'Reset HWID',      value: `${license.hwid_reset_count ?? 0}x`,                          inline: true  },
       { name: 'Berlaku Hingga',  value: license.expires_at_human || 'Lifetime',                       inline: true  },
     ],
-    footer: { text: 'LimeHub License System • Pesan otomatis hilang dalam 20 detik.' },
+    footer: { text: 'Wolf License System • Pesan otomatis hilang dalam 20 detik.' },
     timestamp: new Date().toISOString(),
   };
 

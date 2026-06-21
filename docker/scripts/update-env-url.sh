@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-# Update APP_URL (Backend) dari tunnel ngrok aktif.
+# Update APP_URL (Backend) dengan static ngrok URL.
+# URL tidak berubah-ubah karena menggunakan custom domain ngrok:
+#   ngrok http --url=unfertile-proconsularly-dorris.ngrok-free.dev 8000
 # LARAVEL_API_URL bot tetap http://nginx (internal Docker).
 
 set -euo pipefail
@@ -9,28 +11,22 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=common.sh
 source "${SCRIPT_DIR}/common.sh"
 
-NGROK_API_URL="${NGROK_API_URL:-http://localhost:${NGROK_UI_PORT:-4040}/api/tunnels}"
-FALLBACK_URL="${1:-}"
+# Static ngrok URL — tidak berubah, tidak perlu polling API
+STATIC_NGROK_URL="https://unfertile-proconsularly-dorris.ngrok-free.dev"
 
-ngrok_url="${FALLBACK_URL}"
+ngrok_url="${STATIC_NGROK_URL}"
 
-if [ -z "${ngrok_url}" ]; then
-    ngrok_url="$(wait_for_ngrok_url "${NGROK_API_URL}" 30 2 || true)"
-fi
-
-if [ -z "${ngrok_url}" ]; then
-    log_warn "Tunnel ngrok tidak ditemukan. Lewati update URL."
-    log_warn "Set manual: APP_URL di Backend/.env dan LARAVEL_API_URL di Bot_Server/.env"
-    exit 0
-fi
-
-log_ok "URL ngrok: ${ngrok_url}"
+log_ok "URL ngrok (static): ${ngrok_url}"
 
 set_env_var "${BACKEND_ENV}" "APP_URL" "${ngrok_url}"
 # Bot di dalam Docker network — gunakan nginx internal, bukan URL ngrok publik
 set_env_var "${BOT_ENV}" "LARAVEL_API_URL" "http://nginx"
 
+# Update Midtrans notification URL agar pakai ngrok URL yang sama
+set_env_var "${BACKEND_ENV}" "MIDTRANS_NOTIFICATION_URL" "${ngrok_url}/api/midtrans/callback"
+
 log_ok "Backend/.env → APP_URL=${ngrok_url}"
+log_ok "Backend/.env → MIDTRANS_NOTIFICATION_URL=${ngrok_url}/api/midtrans/callback"
 log_ok "Bot_Server/.env → LARAVEL_API_URL=http://nginx (internal Docker)"
 
 # Hapus dev hot file agar @vite tidak mengarah ke localhost:5173
@@ -47,7 +43,7 @@ fi
 
 clear_laravel_cache
 
-compose restart backend queue bot >/dev/null 2>&1 || true
+compose restart backend queue bot > /dev/null 2>&1 || true
 
 echo ""
 log_info "Roblox executor:"
@@ -55,3 +51,4 @@ echo "  loadstring(game:HttpGet(\"${ngrok_url}/Loader.lua\"))()"
 echo ""
 log_info "Dashboard admin: ${ngrok_url}/admin/dashboard"
 log_info "Test inject:     ${ngrok_url}/admin/inject-test"
+log_info "Midtrans webhook: ${ngrok_url}/api/midtrans/callback"

@@ -38,6 +38,12 @@ module.exports = {
       .filter(Boolean),
     // Channel khusus Admin Panel (opsional — jika kosong, panel admin dilewati)
     adminChannelId: process.env.ADMIN_CHANNEL_ID || null,
+    // Channel khusus Roblox Link Panel (opsional — jika kosong, panel roblox dilewati)
+    robloxChannelId: process.env.ROBLOX_CHANNEL_ID || null,
+    // Category ID untuk membuat channel private tiket (opsional)
+    ticketCategoryId: process.env.TICKET_CATEGORY_ID || null,
+    // Channel khusus untuk memposting tombol "Open Ticket" (opsional)
+    ticketChannelId: process.env.TICKET_CHANNEL_ID || null,
   },
   laravel: {
     apiUrl: process.env.LARAVEL_API_URL.replace(/\/+$/, ''), // hapus trailing slash

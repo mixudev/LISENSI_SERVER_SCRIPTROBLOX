@@ -15,6 +15,15 @@ use Illuminate\Support\Facades\Route;
 // ── Landing Page ──────────────────────────────────────────────────────────
 Route::get('/', [Front\HomeController::class, 'index'])->name('home');
 
+// ── Legal Pages (diperlukan untuk Roblox OAuth publication) ───────────────
+Route::get('/privacy', fn () => view('front.privacy'))->name('privacy');
+Route::get('/terms', fn () => view('front.terms'))->name('terms');
+
+// ── Roblox account binding ────────────────────────────────────────────────
+Route::get('/roblox/connect', [Front\RobloxAuthController::class, 'connect'])->name('roblox.connect');
+Route::post('/roblox/connect', [Front\RobloxAuthController::class, 'manualSubmit'])->name('roblox.manual-submit');
+Route::get('/roblox/callback', [Front\RobloxAuthController::class, 'callback'])->name('roblox.callback');
+
 // ── Loader.lua — diakses executor Roblox via HttpGet ──────────────────────
 Route::get('/Loader.lua', [Front\LoaderController::class, 'serve'])->name('loader.lua');
 Route::get('/loader.lua', [Front\LoaderController::class, 'serve']);
@@ -89,6 +98,22 @@ Route::prefix('admin')
         // Test Inject (debug tool)
         Route::get('/inject-test', [Admin\InjectTestController::class, 'index'])->name('inject-test.index');
         Route::post('/inject-test/run', [Admin\InjectTestController::class, 'run'])->name('inject-test.run');
+
+        // Discord Admins
+        Route::get('/discord-admins', [Admin\DiscordAdminController::class, 'index'])->name('discord-admins.index');
+        Route::post('/discord-admins', [Admin\DiscordAdminController::class, 'store'])->name('discord-admins.store');
+        Route::put('/discord-admins/{discordAdmin}', [Admin\DiscordAdminController::class, 'update'])->name('discord-admins.update');
+        Route::get('/discord-admins/lookup', [Admin\DiscordAdminController::class, 'lookupDiscord'])->name('discord-admins.lookup');
+        Route::patch('/discord-admins/{discordAdmin}/toggle', [Admin\DiscordAdminController::class, 'toggleActive'])->name('discord-admins.toggle');
+        Route::delete('/discord-admins/{discordAdmin}', [Admin\DiscordAdminController::class, 'destroy'])->name('discord-admins.destroy');
+
+        // AI API Keys Settings
+        Route::get('/ai-keys', [Admin\AiKeyController::class, 'index'])->name('ai-keys.index');
+        Route::post('/ai-keys', [Admin\AiKeyController::class, 'store'])->name('ai-keys.store');
+        Route::put('/ai-keys/{aiKey}', [Admin\AiKeyController::class, 'update'])->name('ai-keys.update');
+        Route::patch('/ai-keys/{aiKey}/toggle', [Admin\AiKeyController::class, 'toggleActive'])->name('ai-keys.toggle');
+        Route::patch('/ai-keys/{aiKey}/reset-errors', [Admin\AiKeyController::class, 'resetErrors'])->name('ai-keys.reset-errors');
+        Route::delete('/ai-keys/{aiKey}', [Admin\AiKeyController::class, 'destroy'])->name('ai-keys.destroy');
     });
 
 // ── Dashboard User ────────────────────────────────────────────────────────

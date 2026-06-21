@@ -15,10 +15,15 @@ services:
       RUN_MIGRATIONS: "false"
 
   # ─── ngrok tunnel (local dev — Roblox testing) ───────────────────────────────
+  # CATATAN: ngrok container Docker TIDAK dipakai karena custom domain
+  # unfertile-proconsularly-dorris.ngrok-free.dev harus dijalankan manual:
+  #   ngrok http --url=unfertile-proconsularly-dorris.ngrok-free.dev 8000
+  #
+  # Container ini tetap ada untuk fallback jika ingin pakai URL random.
   ngrok:
     image: ngrok/ngrok:latest
     container_name: sl-ngrok
-    restart: unless-stopped
+    restart: "no"
     command: http nginx:80
     environment:
       NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}

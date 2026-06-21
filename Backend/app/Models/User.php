@@ -19,6 +19,7 @@ class User extends Authenticatable
         'name',
         'email',
         'discord_id',
+        'roblox_username',
         'password',
         'role',
         'phone',

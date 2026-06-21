@@ -12,6 +12,10 @@
         ['href' => route('admin.activities.index'), 'path' => '/admin/activities',       'label' => 'Aktivitas',     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>'],
         ['href' => route('admin.inject-test.index'),'path' => '/admin/inject-test',      'label' => 'Test Inject',   'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>'],
     ];
+    $navDiscord = [
+        ['href' => route('admin.discord-admins.index'), 'path' => '/admin/discord-admins', 'label' => 'Admin Discord', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>'],
+        ['href' => route('admin.ai-keys.index'),         'path' => '/admin/ai-keys',         'label' => 'AI Bot Settings', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364.364l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>'],
+    ];
 @endphp
 
 <aside id="sidebar"
@@ -64,6 +68,30 @@
             <p class="sidebar-section-title px-3 mb-1.5 text-[10px] font-mono font-medium uppercase tracking-widest text-slate-400">Monitoring</p>
             <ul class="space-y-0.5">
                 @foreach ($navSecurity as $item)
+                    @php $isActive = request()->is(ltrim($item['path'], '/') . '*'); @endphp
+                    <li>
+                        <a href="{{ $item['href'] }}"
+                            data-href="{{ $item['path'] }}"
+                            class="sidebar-link {{ $isActive ? 'active' : '' }}"
+                            aria-label="{{ $item['label'] }}">
+                            <span class="sidebar-icon w-5 h-5 flex-shrink-0 flex items-center justify-center">
+                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" class="w-4 h-4">
+                                    {!! $item['icon'] !!}
+                                </svg>
+                            </span>
+                            <span class="sidebar-label">{{ $item['label'] }}</span>
+                            <span class="sidebar-tooltip">{{ $item['label'] }}</span>
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+
+        {{-- Discord Bot --}}
+        <div>
+            <p class="sidebar-section-title px-3 mb-1.5 text-[10px] font-mono font-medium uppercase tracking-widest text-slate-400">Discord Bot</p>
+            <ul class="space-y-0.5">
+                @foreach ($navDiscord as $item)
                     @php $isActive = request()->is(ltrim($item['path'], '/') . '*'); @endphp
                     <li>
                         <a href="{{ $item['href'] }}"

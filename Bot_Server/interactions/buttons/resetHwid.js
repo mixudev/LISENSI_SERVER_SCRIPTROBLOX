@@ -23,16 +23,19 @@ async function handleResetHwid(interaction) {
   }
 
   const resetCount = result.data?.data?.hwid_reset_count;
+  const alreadyClear = result.data?.data?.already_clear;
+
+  const title = alreadyClear ? '🔄 HWID Belum Terikat' : '🔄 HWID Berhasil Direset';
 
   await interaction.editReply({
     embeds: [
       successEmbed(
-        '🔄 HWID Berhasil Direset',
+        title,
         [
           result.message || 'HWID pada lisensi Anda telah dikosongkan.',
-          resetCount !== undefined ? `Total reset: **${resetCount}x**` : null,
+          resetCount !== undefined && !alreadyClear ? `Total reset: **${resetCount}x**` : null,
           '',
-          'Jalankan ulang loader di perangkat/game baru.',
+          alreadyClear ? 'Anda dapat langsung masuk ke game menggunakan device manapun.' : 'Jalankan ulang loader di perangkat/game baru.',
           '',
           '_Pesan ini otomatis hilang dalam 20 detik._',
         ]

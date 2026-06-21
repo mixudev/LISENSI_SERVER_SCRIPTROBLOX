@@ -1,48 +1,46 @@
 # set-ngrok-url.ps1
-# Otomatis ambil URL ngrok yang aktif dan update APP_URL di .env
+# Menggunakan static ngrok URL yang sudah dikonfigurasi (tidak berubah-ubah).
 # Jalankan: .\set-ngrok-url.ps1
-# Setelah ngrok http 8000 sudah running di terminal lain
+# Pastikan ngrok sudah running: ngrok http --url=unfertile-proconsularly-dorris.ngrok-free.dev 8000
 
-$ngrokApi = "http://localhost:4040/api/tunnels"
-$envFile  = ".env"
+$NGROK_URL = "https://unfertile-proconsularly-dorris.ngrok-free.dev"
+$envFile   = ".env"
 
-Write-Host "Mencari URL ngrok aktif..." -ForegroundColor Cyan
+Write-Host "Menggunakan static ngrok URL: $NGROK_URL" -ForegroundColor Cyan
 
-try {
-    $resp    = Invoke-RestMethod -Uri $ngrokApi -ErrorAction Stop
-    $tunnel  = $resp.tunnels | Where-Object { $_.proto -eq "https" } | Select-Object -First 1
+# Baca .env
+$content = Get-Content $envFile -Raw
 
-    if (-not $tunnel) {
-        Write-Host "Tidak ada tunnel HTTPS aktif. Pastikan 'ngrok http 8000' sudah berjalan." -ForegroundColor Red
-        exit 1
-    }
+# Ganti APP_URL
+$content = $content -replace 'APP_URL=.*', "APP_URL=$NGROK_URL"
 
-    $ngrokUrl = $tunnel.public_url
-    Write-Host "URL ngrok ditemukan: $ngrokUrl" -ForegroundColor Green
+# Ganti ROBLOX_REDIRECT_URI jika ada
+$content = $content -replace 'ROBLOX_REDIRECT_URI=.*', "ROBLOX_REDIRECT_URI=$NGROK_URL/roblox/callback"
 
-    # Baca .env
-    $content = Get-Content $envFile -Raw
+# Ganti MIDTRANS_NOTIFICATION_URL jika ada
+$content = $content -replace 'MIDTRANS_NOTIFICATION_URL=.*', "MIDTRANS_NOTIFICATION_URL=$NGROK_URL/api/midtrans/callback"
 
-    # Ganti APP_URL
-    $content = $content -replace 'APP_URL=.*', "APP_URL=$ngrokUrl"
+# Simpan
+Set-Content $envFile $content -NoNewline
+Write-Host "APP_URL di .env berhasil diset ke: $NGROK_URL" -ForegroundColor Green
 
-    # Simpan
-    Set-Content $envFile $content -NoNewline
-    Write-Host "APP_URL di .env berhasil diupdate ke: $ngrokUrl" -ForegroundColor Green
+# Clear Laravel config cache
+Write-Host "Membersihkan cache Laravel..." -ForegroundColor Yellow
+php artisan config:clear
+php artisan view:clear
+php artisan route:clear
 
-    # Clear Laravel config cache
-    php artisan config:clear
-    php artisan view:clear
-    Write-Host ""
-    Write-Host "Sekarang buka Roblox executor dan jalankan:" -ForegroundColor Yellow
-    Write-Host "  script_key = `"LZD-XXXX-XXXX-XXXX-XXXX`"" -ForegroundColor White
-    Write-Host "  loadstring(game:HttpGet(`"$ngrokUrl/Loader.lua`"))()" -ForegroundColor White
-    Write-Host ""
-    Write-Host "Dashboard admin: $ngrokUrl/admin/dashboard" -ForegroundColor Cyan
-    Write-Host "Test inject:     $ngrokUrl/admin/inject-test" -ForegroundColor Cyan
-    Write-Host "Log API:         $ngrokUrl/admin/api-logs" -ForegroundColor Cyan
-
-} catch {
-    Write-Host "Error: $_" -ForegroundColor Red
-    Write-Host "Pastikan ngrok sudah berjalan ('ngrok http 8000') sebelum menjalankan script ini." -ForegroundColor Yellow
-}
+Write-Host ""
+Write-Host "=== URL APLIKASI ===" -ForegroundColor Cyan
+Write-Host "  Dashboard Admin : $NGROK_URL/admin/dashboard" -ForegroundColor White
+Write-Host "  Test Inject     : $NGROK_URL/admin/inject-test" -ForegroundColor White
+Write-Host "  Log API         : $NGROK_URL/admin/api-logs" -ForegroundColor White
+Write-Host ""
+Write-Host "=== ROBLOX EXECUTOR ===" -ForegroundColor Yellow
+Write-Host "  loadstring(game:HttpGet(`"$NGROK_URL/Loader.lua`"))()" -ForegroundColor White
+Write-Host ""
+Write-Host "=== MIDTRANS WEBHOOK ===" -ForegroundColor Magenta
+Write-Host "  Notification URL: $NGROK_URL/api/midtrans/callback" -ForegroundColor White
+Write-Host "  Daftarkan URL ini di: https://dashboard.sandbox.midtrans.com" -ForegroundColor Gray
+Write-Host "  Settings > Configuration > Payment Notification URL" -ForegroundColor Gray
+Write-Host ""
